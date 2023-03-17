@@ -1,0 +1,4 @@
+FROM sphinxdoc/sphinx
+
+WORKDIR /docs
+RUN pip install myst_parser furo sphinxcontrib-mermaid sphinx_design

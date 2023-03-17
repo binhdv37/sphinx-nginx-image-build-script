@@ -8,24 +8,34 @@
 # 3. push lên docker hub
 # - link tới dockerhub repo
 
-while getopts p:t: flag
+while getopts p:b:t: flag
 do
     case "${flag}" in
         p) pathToDocs=${OPTARG};;
+        b) sphinxBuilderImageTag=${OPTARG};;
         t) outputImageTag=${OPTARG};;
     esac
 done
 
-echo "===> Path to docs folder: $pathToDocs";
+echo ">> Path to docs folder: $pathToDocs";
 
 echo "";
 
-echo "===> Output image tag: $outputImageTag";
+echo ">> Sphinx builder image tag: $sphinxBuilderImageTag";
 
 echo "";
 
-echo "===> Build source code to html...";
-docker run --rm -v $pathToDocs:/docs binhdv37/sphinx-docs-builder make html;
+echo ">> Output image tag: $outputImageTag";
+
+echo "";
+
+echo "===> Build sphinx-builder-image: $sphinxBuilderImageTag";
+docker build -f builder-dockerfile -t $sphinxBuilderImageTag .;
+
+echo "";
+
+echo "===> Build source code to html";
+docker run --rm -v $pathToDocs:/docs $sphinxBuilderImageTag make html;
 
 echo "";
 
@@ -35,8 +45,8 @@ cp -R $pathToDocs/build/html .;
 
 echo "";
 
-echo "===> Build docker image: $outputImageTag";
-docker build -f docs-dockerfile -t $outputImageTag .
+echo "===> Build final webserver docker image: $outputImageTag";
+docker build -f webserver-dockerfile -t $outputImageTag .;
 
 echo "";
 
