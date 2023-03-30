@@ -22,3 +22,6 @@ my-sphinx-builder, my-docs-webserver
 docker run -p 81:80 -d my-docs-webserver
 ```
 > open [http://localhost:81](http://localhost:81) to see the final output.
+
+**Updated command**
+> docker build -t $finalOutputTag -f Dockerfile .
